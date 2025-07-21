@@ -1,4 +1,5 @@
 (async function() {
+    alert('Loading EmulatorJS...');
     const scripts = [
         "emulator.js",
         "nipplejs.js",

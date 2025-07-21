@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste API ROMs</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .item { padding: 10px; margin: 5px; border: 1px solid #ccc; }
+        .folder { background-color: #e6f3ff; }
+        .rom { background-color: #f0f0f0; }
+        button { margin: 5px; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h1>Teste da API de ROMs</h1>
+    <button onclick="loadROMs('/')">Carregar Pasta Raiz</button>
+    <button onclick="loadROMs('/Nintendo')">Carregar Nintendo</button>
+    <button onclick="loadROMs('/Nintendo/NES')">Carregar NES</button>
+    <div id="result"></div>
+
+    <script>
+        async function loadROMs(path) {
+            try {
+                const response = await fetch(`/api/roms?path=${encodeURIComponent(path)}`);
+                const data = await response.json();
+                
+                let html = `<h2>Pasta: ${data.path}</h2>`;
+                html += '<div>';
+                
+                data.items.forEach(item => {
+                    if (item.type === 'folder') {
+                        html += `<div class="item folder">📁 ${item.name} <button onclick="loadROMs('${item.path}')">Abrir</button></div>`;
+                    } else {
+                        html += `<div class="item rom">🎮 ${item.name} (${item.size} bytes)</div>`;
+                    }
+                });
+                
+                html += '</div>';
+                document.getElementById('result').innerHTML = html;
+                
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<p style="color: red;">Erro: ${error.message}</p>`;
+            }
+        }
+
+        // Carregar pasta raiz automaticamente
+        loadROMs('/');
+    </script>
+</body>
+</html> 
